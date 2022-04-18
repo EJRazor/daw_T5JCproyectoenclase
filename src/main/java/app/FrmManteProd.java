@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 
-public class FrmManteProd extends JFrame {
+public class FrmManteProd extends JFrame  {
 
 	
 	private JPanel contentPane;
@@ -47,6 +47,7 @@ public class FrmManteProd extends JFrame {
 	private JButton btnRegistrar;
 	private JLabel lblProveedor;
 	private JComboBox cboProveedores;
+	private JButton btnBuscar;
 	/**
 	 * Launch the application.
 	 */
@@ -152,6 +153,15 @@ public class FrmManteProd extends JFrame {
 		cboProveedores.setBounds(122, 155, 199, 22);
 		contentPane.add(cboProveedores);
 		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BuscarProd();
+			}
+		});
+		btnBuscar.setBounds(433, 29, 89, 23);
+		contentPane.add(btnBuscar);
+		
 		llenaCombo();
 		
 	}
@@ -234,4 +244,32 @@ public class FrmManteProd extends JFrame {
 		}
 		em.close();
 	}
+	
+	void BuscarProd() {
+		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("mysql");
+		EntityManager em= fabrica.createEntityManager();
+		Producto p = em.find(Producto.class, txtCódigo.getText().trim());
+		if (p == null)
+		mensaje("Producto No existe!!!");
+		else 
+			{
+				txtSalida.setText("");
+				txtSalida.append("----------Producto----------"+"\n");
+				txtSalida.append("Id producto: "+p.getCod()+"\n");
+				txtSalida.append("Descripcion producto: "+p.getDesc()+"\n");
+				txtSalida.append("Stock: "+p.getStk()+"\n");
+				txtSalida.append("Precio producto: "+p.getPrecio()+"\n");
+				txtSalida.append("Estado: "+p.getEstado()+"\n");
+				txtSalida.append("Proveedor: "+p.getIdproveedor()+"-"+p.getProveedor().getNombre()+"\n");
+				txtSalida.append("Id Categoria: "+p.getIdcat()+"\n");
+				txtSalida.append("Categoria: "+p.getCategoria().getDesc()+"\n"+"\n");
+			}
+			em.close();
+	}
+	
+	protected void mensaje(String cad) {
+		JOptionPane.showMessageDialog(this, cad);
+	}
+	
+	
 }
